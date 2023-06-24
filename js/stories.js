@@ -19,7 +19,7 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 
-function generateStoryMarkup(story) {
+function generateStoryMarkup(story, showDeleteBtn = false) {
   // console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
@@ -28,6 +28,8 @@ function generateStoryMarkup(story) {
 
   return $(`
       <li id="${story.storyId}">
+      <div>
+      ${showDeleteBtn ? getDeleteBtnHTML() : ""}
       ${showStar ? getStarHTML(story, currentUser) : ""}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -35,6 +37,7 @@ function generateStoryMarkup(story) {
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
         <small class="story-user">posted by ${story.username}</small>
+        </div>
       </li>
     `);
 }
@@ -119,4 +122,38 @@ function putFavoritesListOnPage() {
     }
   }
   $favoritedStories.show();
+}
+
+function putUserStoriesOnPage() {
+  console.debug("putUserStoriesOnPage");
+
+  $ownStories.empty();
+
+  if (currentUser.ownStories.length === 0) {
+    $ownStories.append("<h5> No User Stories added!</h5>");
+  } else {
+    for (let story of currentUser.ownStories) {
+      const $story = generateStoryMarkup(story, true);
+      $ownStories.append($story);
+    }
+  }
+  $ownStories.show();
+}
+
+function getDeleteBtnHTML() {
+  return `
+  <span class="trash-can">
+    <i class="fas fa-trash-alt"></i>
+    </span>`;
+}
+
+async function deleteStory(evt) {
+  console.debug("deleteStory");
+
+  const $closestLi = $(evt.target).closest("li");
+  const storyId = $closestLi.attr("id");
+
+  await storyList.removeStory(currentUser, storyId);
+
+  await putUserStoriesOnPage();
 }
