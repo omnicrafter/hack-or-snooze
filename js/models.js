@@ -80,6 +80,7 @@ class StoryList {
 
     const story = new Story(response.data.story);
     this.stories.unshift(story);
+    user.ownStories.unshift(story);
 
     return story;
   }

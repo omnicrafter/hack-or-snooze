@@ -38,6 +38,7 @@ function generateStoryMarkup(story, showDeleteBtn = false) {
         <small class="story-author">by ${story.author}</small>
         <small class="story-user">posted by ${story.username}</small>
         </div>
+        <hr>
       </li>
     `);
 }
@@ -84,6 +85,7 @@ async function newStorySubmit(evt) {
 
   $newStoryForm.slideUp("slow");
   $newStoryForm.trigger("reset");
+  $allStoriesList.show();
 }
 
 $newStoryForm.on("submit", newStorySubmit);
