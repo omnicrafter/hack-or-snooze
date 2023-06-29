@@ -159,3 +159,5 @@ async function deleteStory(evt) {
 
   await putUserStoriesOnPage();
 }
+
+$storiesLists.on("click", ".trash-can", deleteStory);
